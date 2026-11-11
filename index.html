@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Nama Digital HUD - Faris Shafwan Abdillah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070913;
+            --tech-cyan: #00f2fe;
+            --tech-blue: #4facfe;
+            --tech-purple: #7f00ff;
+            --card-bg: rgba(13, 17, 32, 0.85);
+            --border-glow: rgba(0, 242, 254, 0.4);
+            --text-bright: #ffffff;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            padding: 1.5rem;
+        }
+
+        /* Background Tech Grid & Glowing Orbs */
+        .tech-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+        }
+
+        .glow-orb-1 {
+            position: fixed;
+            top: 10%;
+            left: 10%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, transparent 70%);
+            z-index: 1;
+            filter: blur(40px);
+        }
+
+        .glow-orb-2 {
+            position: fixed;
+            bottom: 10%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(127, 0, 255, 0.2) 0%, transparent 70%);
+            z-index: 1;
+            filter: blur(50px);
+        }
+
+        /* Outer HUD Frame / Tech Surroundings */
+        .hud-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 950px;
+            padding: 2.5rem;
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            background: rgba(8, 11, 22, 0.6);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.1), inset 0 0 30px rgba(0, 242, 254, 0.05);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Tech HUD Corners */
+        .hud-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--tech-cyan);
+            border-style: solid;
+        }
+
+        .hud-corner.top-left { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+        .hud-corner.top-right { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+        .hud-corner.bottom-left { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+        .hud-corner.bottom-right { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+        /* HUD Decorative Tech Lines & Labels */
+        .hud-line-top {
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tech-cyan), transparent);
+        }
+
+        .hud-status-badge {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--tech-cyan);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--tech-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--tech-cyan);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Centered Business Card */
+        .card-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.15);
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--tech-cyan), var(--tech-purple));
+        }
+
+        /* Profile Photo Container */
+        .photo-frame {
+            position: relative;
+            width: 200px;
+            height: 240px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--tech-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .photo-hud-overlay {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            background: linear-gradient(180deg, transparent 70%, rgba(0, 242, 254, 0.2));
+        }
+
+        /* Card Information Details */
+        .card-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .user-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text-bright);
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            background: linear-gradient(90deg, #ffffff, var(--tech-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .info-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            color: var(--tech-cyan);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .tag-status {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: 0.3rem;
+            padding: 0.3rem 0.9rem;
+            background: rgba(0, 242, 254, 0.12);
+            border: 1px solid var(--tech-cyan);
+            color: var(--tech-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive Adjustment */
+        @media (max-width: 768px) {
+            .hud-wrapper {
+                padding: 1.25rem;
+            }
+            .card-container {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.75rem;
+                gap: 1.5rem;
+            }
+            .photo-frame {
+                width: 170px;
+                height: 200px;
+            }
+            .tag-status {
+                align-self: center;
+            }
+            .user-name {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tech Surroundings Grid & Glow -->
+    <div class="tech-bg"></div>
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+
+    <!-- Outer Tech HUD Surroundings Frame -->
+    <div class="hud-wrapper">
+        <div class="hud-corner top-left"></div>
+        <div class="hud-corner top-right"></div>
+        <div class="hud-corner bottom-left"></div>
+        <div class="hud-corner bottom-right"></div>
+        
+        <div class="hud-line-top"></div>
+        <div class="hud-status-badge">
+            <div class="hud-status-dot"></div>
+            SYSTEM ACTIVE // DIGITAL CARD
+        </div>
+
+        <!-- Centered Business Card -->
+        <div class="card-container">
+            <div class="photo-frame">
+                <!-- Foto Profil -->
+                <img src="WhatsApp Image 2026-11-11 at 22.41.22.jpeg" alt="Faris Shafwan Abdillah" class="profile-img">
+                <div class="photo-hud-overlay"></div>
+            </div>
+
+            <div class="card-details">
+                <div class="user-name">FARIS SHAFWAN ABDILLAH - SHAFAR</div>
+                
+                <div class="info-row">
+                    <span class="info-label">NIM</span>
+                    <span class="info-value">025241461163</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">PRODI / KELAS</span>
+                    <span class="info-value">MANAJEMEN INFORMASI (MI-B)</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">UNIVERSITAS</span>
+                    <span class="info-value">SEKOLAH TINGGI MULTI MEDIA (MMTC) YOGYAKARTA</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">DOMISILI</span>
+                    <span class="info-value">JAMBI - YOGYAKARTA</span>
+                </div>
+
+                <div class="tag-status">STATUS: MAHASISWA</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
